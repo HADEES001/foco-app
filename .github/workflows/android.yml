@@ -12,21 +12,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configurar Node.js
-  uses: actions/setup-node@v4
-  with:
-    node-version: 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
       - name: Instalar dependencias
         run: npm install
+
+      - name: Construir aplicación web
+        run: npm run build
 
       - name: Instalar Capacitor CLI
         run: npm install -g @capacitor/cli
 
       - name: Crear proyecto Android
         run: npx cap add android
-
-      - name: Construir aplicación web
-        run: npm run build
 
       - name: Sincronizar Capacitor
         run: npx cap sync android
