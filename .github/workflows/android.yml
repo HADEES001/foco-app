@@ -28,21 +28,23 @@ jobs:
       - name: Crear proyecto Android
         run: npx cap add android
 
-      - name: Sincronizar Capacitor
-        run: npx cap sync android
       - name: Instalar herramientas para iconos
         run: |
           sudo apt-get update
           sudo apt-get install -y librsvg2-bin
           npm install -D @capacitor/assets
 
-      - name: Crear icono Android desde FOCO
+      - name: Crear icono FOCO
         run: |
           mkdir -p resources
           rsvg-convert -w 1024 -h 1024 public/fococon.svg -o resources/icon.png
 
-      - name: Generar iconos nativos Android
+      - name: Generar iconos Android
         run: npx capacitor-assets generate --android
+
+      - name: Sincronizar Capacitor
+        run: npx cap sync android
+
       - name: Configurar Java
         uses: actions/setup-java@v4
         with:
