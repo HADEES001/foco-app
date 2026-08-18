@@ -44,7 +44,7 @@ jobs:
       - name: Crear icono FOCO
         run: |
           mkdir -p resources
-          rsvg-convert -w 1024 -h 1024 public/fococon.svg -o resources/icon.png
+          rsvg-convert -w 1024 -h 1024 public/focicon.svg -o resources/icon.png
 
       - name: Generar iconos Android
         run: npx capacitor-assets generate --android
