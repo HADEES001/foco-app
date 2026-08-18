@@ -1,1 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOCO — ¿Estás haciendo lo que dijiste?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --bg:     #0A0A0A;
+    --surf:   #111111;
+    --line:   #1E1E1E;
+    --line2:  #2A2A2A;
+    --white:  #F0EBE0;
+    --mid:    #555550;
+    --dim:    #2E2E2C;
+    --lima:   #C8FF00;
+    --rojo:   #FF3B30;
+    --verde:  #34C759;
+    --sans:   'Bricolage Grotesque', sans-serif;
+    --mono:   'Space Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── LAYOUT ── */
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    border-bottom: 1px solid var(--line);
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+  }
+  nav .inner {
+    max-width: 1080px; margin: 0 auto; padding: 0 24px;
+    height: 56px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: var(--sans); font-size: 18px; font-weight: 800;
+    color: var(--white); letter-spacing: -0.5px; text-decoration: none;
+  }
+  .nav-logo span { color: var(--lima); }
+  .nav-cta {
+    background: var(--lima); color: var(--bg); border: none;
+    padding: 8px 18px; font-family: var(--sans); font-size: 13px;
+    font-weight: 800; cursor: pointer; border-radius: 8px;
+    letter-spacing: -0.2px; text-decoration: none; display: inline-block;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 140px 24px 80px;
+    max-width: 1080px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+  .hero-tag {
+    font-family: var(--mono); font-size: 10px; color: var(--lima);
+    letter-spacing: 0.2em; margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 5vw, 60px); font-weight: 800;
+    letter-spacing: -2px; line-height: 1.05; color: var(--white);
+    margin-bottom: 20px;
+  }
+  .hero h1 em { font-style: normal; color: var(--lima); }
+  .hero-sub {
+    font-size: 16px; color: var(--mid); line-height: 1.7;
+    margin-bottom: 36px; max-width: 480px;
+  }
+  .hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--lima); color: var(--bg); border: none;
+    padding: 14px 28px; font-family: var(--sans); font-size: 15px;
+    font-weight: 800; cursor: pointer; border-radius: 10px;
+    letter-spacing: -0.3px; text-decoration: none; display: inline-block;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-ghost {
+    background: transparent; color: var(--mid); border: 1px solid var(--line2);
+    padding: 14px 24px; font-family: var(--mono); font-size: 12px;
+    cursor: pointer; border-radius: 10px; letter-spacing: 0.08em;
+    text-decoration: none; display: inline-block; transition: color 0.15s, border-color 0.15s;
+  }
+  .btn-ghost:hover { color: var(--white); border-color: var(--mid); }
+  .hero-note {
+    font-family: var(--mono); font-size: 10px; color: var(--dim);
+    letter-spacing: 0.1em; margin-top: 16px;
+  }
+
+  /* ── MOCKUP ── */
+  .phone-mockup {
+    position: relative; display: flex; justify-content: center;
+  }
+  .phone-shell {
+    width: 240px; background: var(--surf); border: 1px solid var(--line2);
+    border-radius: 36px; padding: 12px; position: relative;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .phone-notch {
+    width: 80px; height: 6px; background: var(--line2); border-radius: 3px;
+    margin: 0 auto 8px;
+  }
+  .phone-screen {
+    background: var(--bg); border-radius: 26px; overflow: hidden;
+    padding: 20px 16px;
+  }
+  .ps-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .ps-logo { font-size: 14px; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+  .ps-date { font-family: var(--mono); font-size: 8px; color: var(--mid); }
+  .ps-label { font-family: var(--mono); font-size: 8px; color: var(--mid); letter-spacing: 0.12em; margin-bottom: 4px; }
+  .ps-score { font-size: 52px; font-weight: 800; color: var(--verde); letter-spacing: -3px; line-height: 1; }
+  .ps-sublbl { font-family: var(--mono); font-size: 8px; color: var(--verde); letter-spacing: 0.1em; margin-top: 2px; }
+  .ps-bar {
+    height: 1px; margin: 14px 0 6px; position: relative;
+    background: linear-gradient(to right, var(--rojo), #FF9F0A, var(--verde));
+  }
+  .ps-dot {
+    position: absolute; top: 50%; right: 22%;
+    transform: translate(50%,-50%);
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--verde);
+  }
+  .ps-divider { height: 1px; background: var(--line); margin: 14px 0; }
+  .ps-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .ps-row-label { font-family: var(--mono); font-size: 8px; color: var(--mid); letter-spacing: 0.1em; }
+  .ps-row-val { font-family: var(--sans); font-size: 13px; font-weight: 700; color: var(--white); }
+  .ps-insight {
+    font-size: 11px; color: var(--mid); line-height: 1.5;
+    border-left: 2px solid var(--line2); padding-left: 8px;
+    margin: 14px 0;
+  }
+  .ps-btn {
+    background: var(--lima); color: var(--bg); border: none;
+    width: 100%; padding: 10px; border-radius: 8px;
+    font-family: var(--sans); font-size: 12px; font-weight: 800;
+    cursor: pointer; margin-top: 14px;
+  }
+
+  /* ── DIVIDER SECTION ── */
+  .section-divider {
+    border-top: 1px solid var(--line);
+    max-width: 1080px; margin: 0 auto;
+  }
+
+  /* ── VERDAD SECTION ── */
+  .verdad {
+    padding: 80px 24px;
+    max-width: 1080px; margin: 0 auto;
+    border-top: 1px solid var(--line);
+  }
+  .verdad-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+  }
+  .verdad h2 {
+    font-size: clamp(28px, 3.5vw, 44px); font-weight: 800;
+    letter-spacing: -1.5px; line-height: 1.1;
+    color: var(--white); margin-bottom: 20px;
+  }
+  .verdad h2 em { font-style: normal; color: var(--rojo); }
+  .verdad p { font-size: 15px; color: var(--mid); line-height: 1.8; }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    max-width: 1080px; margin: 0 auto;
+  }
+  .stat-cell {
+    padding: 40px 24px;
+    border-right: 1px solid var(--line);
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-num {
+    font-size: 52px; font-weight: 800; color: var(--lima);
+    letter-spacing: -3px; line-height: 1; display: block; margin-bottom: 8px;
+  }
+  .stat-label { font-family: var(--mono); font-size: 10px; color: var(--mid); letter-spacing: 0.12em; }
+  .stat-desc { font-size: 14px; color: var(--mid); margin-top: 6px; line-height: 1.5; }
+
+  /* ── COMO FUNCIONA ── */
+  .como {
+    padding: 80px 24px;
+    max-width: 1080px; margin: 0 auto;
+    border-top: 1px solid var(--line);
+  }
+  .como-tag {
+    font-family: var(--mono); font-size: 10px; color: var(--mid);
+    letter-spacing: 0.16em; margin-bottom: 40px;
+  }
+  .steps {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 0;
+  }
+  .step {
+    padding: 0 40px 0 0; border-right: 1px solid var(--line);
+    padding-right: 40px;
+  }
+  .step:last-child { border-right: none; padding-right: 0; padding-left: 40px; }
+  .step:nth-child(2) { padding: 0 40px; }
+  .step-num {
+    font-family: var(--mono); font-size: 11px; color: var(--lima);
+    letter-spacing: 0.1em; margin-bottom: 16px; display: block;
+  }
+  .step h3 {
+    font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+    color: var(--white); margin-bottom: 10px; line-height: 1.2;
+  }
+  .step p { font-size: 14px; color: var(--mid); line-height: 1.7; }
+
+  /* ── TIPOS ── */
+  .tipos {
+    padding: 80px 24px;
+    max-width: 1080px; margin: 0 auto;
+    border-top: 1px solid var(--line);
+  }
+  .tipos-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 40px;
+  }
+  .tipos-header h2 {
+    font-size: clamp(24px, 3vw, 38px); font-weight: 800;
+    letter-spacing: -1px; color: var(--white); line-height: 1.1;
+  }
+  .tipos-grid {
+    display: grid; grid-template-columns: repeat(5,1fr);
+    border: 1px solid var(--line);
+  }
+  .tipo-cell {
+    padding: 20px 16px;
+    border-right: 1px solid var(--line);
+  }
+  .tipo-cell:last-child { border-right: none; }
+  .tipo-ico { font-size: 20px; margin-bottom: 10px; }
+  .tipo-name {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+    font-weight: 700; margin-bottom: 6px; display: block;
+  }
+  .tipo-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
+
+  /* ── QUOTE ── */
+  .quote-section {
+    padding: 80px 24px;
+    max-width: 1080px; margin: 0 auto;
+    border-top: 1px solid var(--line);
+  }
+  .quote-text {
+    font-size: clamp(22px, 3vw, 38px); font-weight: 700;
+    letter-spacing: -1px; line-height: 1.2; color: var(--white);
+    max-width: 720px;
+  }
+  .quote-text em { font-style: normal; color: var(--lima); }
+  .quote-sub {
+    font-family: var(--mono); font-size: 11px; color: var(--mid);
+    letter-spacing: 0.1em; margin-top: 24px;
+  }
+
+  /* ── FEATURES LIST ── */
+  .features {
+    padding: 0 24px 80px;
+    max-width: 1080px; margin: 0 auto;
+  }
+  .feat-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 20px 0; border-top: 1px solid var(--line);
+  }
+  .feat-row:last-child { border-bottom: 1px solid var(--line); }
+  .feat-left {
+    display: flex; align-items: center; gap: 16px; flex: 1;
+  }
+  .feat-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--lima); flex-shrink: 0;
+  }
+  .feat-name { font-size: 15px; font-weight: 700; color: var(--white); }
+  .feat-desc { font-size: 14px; color: var(--mid); max-width: 400px; }
+
+  /* ── CTA FINAL ── */
+  .cta-final {
+    padding: 100px 24px;
+    max-width: 1080px; margin: 0 auto;
+    border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+  .cta-final h2 {
+    font-size: clamp(28px, 4vw, 52px); font-weight: 800;
+    letter-spacing: -2px; line-height: 1.05; color: var(--white);
+  }
+  .cta-final h2 em { font-style: normal; color: var(--lima); }
+  .cta-right { display: flex; flex-direction: column; gap: 16px; }
+  .cta-right p { font-size: 15px; color: var(--mid); line-height: 1.7; }
+  .cta-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cta-note { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.1em; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 32px 24px;
+  }
+  footer .inner {
+    max-width: 1080px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .foot-logo { font-size: 15px; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+  .foot-logo span { color: var(--lima); }
+  .foot-copy { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.08em; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; gap: 48px; padding-top: 100px; }
+    .phone-mockup { order: -1; }
+    .verdad-inner { grid-template-columns: 1fr; gap: 32px; }
+    .stats-row { grid-template-columns: 1fr; }
+    .stat-cell { border-right: none; border-bottom: 1px solid var(--line); padding: 28px 24px; }
+    .stat-cell:last-child { border-bottom: none; }
+    .steps { grid-template-columns: 1fr; gap: 0; }
+    .step, .step:nth-child(2), .step:last-child {
+      border-right: none; border-bottom: 1px solid var(--line);
+      padding: 24px 0; padding-left: 0; padding-right: 0;
+    }
+    .step:last-child { border-bottom: none; }
+    .tipos-grid { grid-template-columns: 1fr 1fr; }
+    .tipo-cell:nth-child(2) { border-right: none; }
+    .tipo-cell:nth-child(3) { border-top: 1px solid var(--line); }
+    .tipo-cell:nth-child(4) { border-top: 1px solid var(--line); border-right: none; }
+    .tipo-cell:last-child { border-top: 1px solid var(--line); border-right: none; }
+    .cta-final { grid-template-columns: 1fr; gap: 32px; padding: 64px 24px; }
+    .feat-desc { display: none; }
+    footer .inner { flex-direction: column; gap: 12px; text-align: center; }
+  }
+
+  /* ── ANIMACIONES SUTILES ── */
+  @media (prefers-reduced-motion: no-preference) {
+    .fade-in {
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="inner">
+    <a href="#" class="nav-logo">FOC<span>◎</span></a>
+    <a href="#descargar" class="nav-cta">Descargar gratis</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <p class="hero-tag">DIAGNÓSTICO DE PRODUCTIVIDAD PERSONAL</p>
+    <h1>¿Estás haciendo<br>lo que dijiste<br>que ibas a <em>hacer</em>?</h1>
+    <p class="hero-sub">
+      FOCO te dice, en menos de un minuto, si estás alineado con lo que prometiste — y por qué no si no es así. Sin motivación. Sin rodeos.
+    </p>
+    <div class="hero-actions">
+      <a href="#descargar" class="btn-primary">Descargar para Android</a>
+      <a href="#como" class="btn-ghost">VER CÓMO FUNCIONA</a>
+    </div>
+    <p class="hero-note">GRATIS · SIN REGISTRO · SIN PUBLICIDAD</p>
+  </div>
+
+  <!-- Mockup del teléfono -->
+  <div class="phone-mockup">
+    <div class="phone-shell">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="ps-header">
+          <span class="ps-logo">FOCO</span>
+          <span class="ps-date">LUN 20 JUL</span>
+        </div>
+        <div class="ps-label">SCORE ACTUAL</div>
+        <div class="ps-score">+40</div>
+        <div class="ps-sublbl">ALINEADO</div>
+        <div class="ps-bar"><div class="ps-dot"></div></div>
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:8px;color:var(--dim);margin-bottom:14px">
+          <span>-30</span><span>0</span><span>+100</span>
+        </div>
+        <div class="ps-divider"></div>
+        <div class="ps-row">
+          <span class="ps-row-label">HOY</span>
+          <span class="ps-row-val" style="color:var(--verde)">75%</span>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">RACHA</span>
+          <span class="ps-row-val">7 días</span>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">PATRÓN</span>
+          <span class="ps-row-val" style="color:var(--rojo);font-size:11px">EVITACION</span>
+        </div>
+        <div class="ps-divider"></div>
+        <div class="ps-insight">
+          "Estás haciendo lo que dijiste. Eso ya te diferencia."
+        </div>
+        <button class="ps-btn">Check-in</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-cell fade-in">
+    <span class="stat-num">7</span>
+    <span class="stat-label">PREGUNTAS</span>
+    <p class="stat-desc">Menos de un minuto. Respuestas directas, sin filtro.</p>
+  </div>
+  <div class="stat-cell fade-in">
+    <span class="stat-num">5</span>
+    <span class="stat-label">TIPOS DE BLOQUEO</span>
+    <p class="stat-desc">Evitación, energía, confusión, resistencia, disciplina.</p>
+  </div>
+  <div class="stat-cell fade-in">
+    <span class="stat-num">0</span>
+    <span class="stat-label">COSTO</span>
+    <p class="stat-desc">Sin planes, sin límites, sin publicidad. Gratis para siempre.</p>
+  </div>
+</div>
+
+<!-- LA VERDAD -->
+<section class="verdad">
+  <div class="verdad-inner">
+    <div class="fade-in">
+      <h2>La mayoría de las apps te dan <em>más herramientas.</em> FOCO hace lo contrario.</h2>
+    </div>
+    <div class="fade-in">
+      <p style="margin-bottom:20px">
+        No hay listas de tareas, ni timers de productividad, ni recordatorios motivacionales. Solo tres preguntas y una verdad que sabés pero preferís no ver.
+      </p>
+      <p>
+        El motor de diagnóstico detecta el tipo de desalineación — evitación, resistencia, agotamiento — y te da una acción concreta para hacer <strong style="color:var(--white)">ahora mismo</strong>, no mañana.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="como" id="como">
+  <p class="como-tag">CÓMO FUNCIONA</p>
+  <div class="steps">
+    <div class="step fade-in">
+      <span class="step-num">01</span>
+      <h3>Contás qué ibas a hacer y qué estás haciendo</h3>
+      <p>Dos preguntas directas. Sin juicio, sin explicaciones. La brecha entre las respuestas lo dice todo.</p>
+    </div>
+    <div class="step fade-in">
+      <span class="step-num">02</span>
+      <h3>El motor detecta tu tipo de bloqueo</h3>
+      <p>No es solo "estás o no estás trabajando". Analiza el patrón emocional detrás: evasión, resistencia, confusión, agotamiento real.</p>
+    </div>
+    <div class="step fade-in">
+      <span class="step-num">03</span>
+      <h3>Recibís un diagnóstico sin rodeos</h3>
+      <p>Un insight específico. Una acción concreta. Sin motivación vacía, sin palmadas en la espalda. La verdad que necesitás escuchar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TIPOS DE BLOQUEO -->
+<section class="tipos">
+  <div class="tipos-header">
+    <h2>Los 5 tipos<br>de desalineación</h2>
+    <p style="font-family:var(--mono);font-size:10px;color:var(--mid);letter-spacing:0.1em;max-width:200px;text-align:right">FOCO detecta cuál aplica cada vez que hacés un check-in</p>
+  </div>
+  <div class="tipos-grid fade-in">
+    <div class="tipo-cell">
+      <div class="tipo-ico">↗</div>
+      <span class="tipo-name" style="color:var(--rojo)">EVITACION</span>
+      <p class="tipo-desc">Elegís lo fácil en el momento exacto en que importa lo difícil.</p>
+    </div>
+    <div class="tipo-cell">
+      <div class="tipo-ico">⚡</div>
+      <span class="tipo-name" style="color:#FF9F0A">ENERGIA</span>
+      <p class="tipo-desc">No es pereza. Es desgaste real. Pero igual tenés que arrancar.</p>
+    </div>
+    <div class="tipo-cell">
+      <div class="tipo-ico">?</div>
+      <span class="tipo-name" style="color:#FF9F0A">CONFUSION</span>
+      <p class="tipo-desc">No empezás porque no tenés claro el primer paso.</p>
+    </div>
+    <div class="tipo-cell">
+      <div class="tipo-ico">■</div>
+      <span class="tipo-name" style="color:var(--rojo)">RESISTENCIA</span>
+      <p class="tipo-desc">Sabés exactamente qué hacer. No querés hacerlo.</p>
+    </div>
+    <div class="tipo-cell">
+      <div class="tipo-ico">✓</div>
+      <span class="tipo-name" style="color:var(--verde)">DISCIPLINA</span>
+      <p class="tipo-desc">Estás haciendo lo que dijiste. Eso ya te diferencia del promedio.</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section fade-in">
+  <p class="quote-text">
+    "No fallás por falta de voluntad. Fallás porque <em>elegís lo fácil</em> cuando importa lo difícil. Todos lo hacemos. La diferencia es quién lo reconoce."
+  </p>
+  <p class="quote-sub">— LO QUE TE DICE FOCO EN EL ONBOARDING</p>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="feat-row fade-in">
+    <div class="feat-left">
+      <div class="feat-dot"></div>
+      <span class="feat-name">Sistema de score</span>
+    </div>
+    <p class="feat-desc">Tu rendimiento acumulado en una sola cifra. +10 cuando estás alineado, -10 cuando no. Sin trucos.</p>
+  </div>
+  <div class="feat-row fade-in">
+    <div class="feat-left">
+      <div class="feat-dot"></div>
+      <span class="feat-name">Detección de patrones</span>
+    </div>
+    <p class="feat-desc">Después de 5 check-ins, FOCO detecta tu patrón dominante de desalineación.</p>
+  </div>
+  <div class="feat-row fade-in">
+    <div class="feat-left">
+      <div class="feat-dot"></div>
+      <span class="feat-name">Modo rápido</span>
+    </div>
+    <p class="feat-desc">Solo 2 preguntas. Diagnóstico en 20 segundos para usuarios frecuentes.</p>
+  </div>
+  <div class="feat-row fade-in">
+    <div class="feat-left">
+      <div class="feat-dot"></div>
+      <span class="feat-name">Pomodoro integrado</span>
+    </div>
+    <p class="feat-desc">Terminás el diagnóstico y arrancás un timer de 25 minutos directamente.</p>
+  </div>
+  <div class="feat-row fade-in">
+    <div class="feat-left">
+      <div class="feat-dot"></div>
+      <span class="feat-name">100% offline</span>
+    </div>
+    <p class="feat-desc">Sin API, sin cuenta, sin internet. Todo corre en tu dispositivo.</p>
+  </div>
+  <div class="feat-row fade-in">
+    <div class="feat-left">
+      <div class="feat-dot"></div>
+      <span class="feat-name">Historial y exportación</span>
+    </div>
+    <p class="feat-desc">Revisá tus últimos diagnósticos y exportá todo a CSV cuando quieras.</p>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final" id="descargar">
+  <h2>La app que te dice la verdad. <em>Aunque no te guste.</em></h2>
+  <div class="cta-right">
+    <p>
+      Para personas que ya saben que están procrastinando y quieren entender por qué — no que alguien los motive.
+    </p>
+    <div class="cta-actions">
+      <a href="#" class="btn-primary">
+        ↓ Descargar para Android
+      </a>
+    </div>
+    <p class="cta-note">GRATIS · SIN REGISTRO · SIN PUBLICIDAD · SIN PLANES</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="inner">
+    <span class="foot-logo">FOC<span>◎</span></span>
+    <span class="foot-copy">DIAGNÓSTICO PERSONAL · GRATIS PARA SIEMPRE</span>
+  </div>
+</footer>
+
+<script>
+// Fade-in on scroll
+const observer = new IntersectionObserver(
+  (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+  { threshold: 0.1 }
+);
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
 
