@@ -10,6 +10,12 @@ jobs:
     steps:
       - name: Descargar código
         uses: actions/checkout@v4
+        - name: Comprobar archivos
+  run: |
+    pwd
+    ls -la
+    echo "Contenido de public:"
+    ls -la public || true
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
